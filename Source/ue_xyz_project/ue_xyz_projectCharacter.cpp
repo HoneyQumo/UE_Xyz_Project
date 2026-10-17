@@ -65,6 +65,10 @@ void Aue_xyz_projectCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &Aue_xyz_projectCharacter::Look);
+		
+		//Sitting in Car
+		// EnhancedInputComponent->BindAction(SitInCar, ETriggerEvent::Triggered, this, &Aue_xyz_projectCharacter::SitInCar);
+		PlayerInputComponent->BindAction("SitInCar",IE_Pressed, this, &Aue_xyz_projectCharacter::SitInCar);
 	}
 	else
 	{
@@ -88,6 +92,18 @@ void Aue_xyz_projectCharacter::Look(const FInputActionValue& Value)
 
 	// route the input
 	DoLook(LookAxisVector.X, LookAxisVector.Y);
+}
+
+void Aue_xyz_projectCharacter::SitInCar()
+{
+	if (IsValid(ActiveCar))
+	{
+		AController* ActiveController = GetController();
+		ActiveController->Possess(ActiveCar);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+		AttachToActor(ActiveCar, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		GetMesh()->SetVisibility(false);
+	}
 }
 
 void Aue_xyz_projectCharacter::DoMove(float Right, float Forward)
@@ -130,4 +146,9 @@ void Aue_xyz_projectCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void Aue_xyz_projectCharacter::SetActiveCar(class AWheeledVehiclePawn* NewCar)
+{
+	ActiveCar = NewCar;
 }

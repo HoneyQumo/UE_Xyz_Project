@@ -18,7 +18,8 @@ public class ue_xyz_project : ModuleRules
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"UMG",
-			"Slate"
+			"Slate",
+			"ChaosVehicles"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
