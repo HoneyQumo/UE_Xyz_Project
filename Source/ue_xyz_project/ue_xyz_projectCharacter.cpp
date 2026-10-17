@@ -69,8 +69,10 @@ void Aue_xyz_projectCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &Aue_xyz_projectCharacter::Look);
 		
 		//Sitting in Car
-		// EnhancedInputComponent->BindAction(SitInCar, ETriggerEvent::Triggered, this, &Aue_xyz_projectCharacter::SitInCar);
 		PlayerInputComponent->BindAction("SitInCar",IE_Pressed, this, &Aue_xyz_projectCharacter::SitInCar);
+		
+		// Fire
+		PlayerInputComponent->BindAction("Fire",IE_Pressed, this, &Aue_xyz_projectCharacter::Fire);
 	}
 	else
 	{
@@ -119,6 +121,24 @@ void Aue_xyz_projectCharacter::SitInCar()
 		AttachToActor(ActiveCar, FAttachmentTransformRules::SnapToTargetIncludingScale);
 		GetMesh()->SetVisibility(false);
 	}
+}
+
+void Aue_xyz_projectCharacter::Fire()
+{
+	if (!IsValid(ProjectileType))
+	{
+		return;
+	}
+	
+	FRotator SpawningRotation = GetActorRotation();
+	FVector SpawningLocation = GetActorLocation() + SpawningRotation.RotateVector(FiringOffset);
+	AActor* SpawnedActor =  GetWorld()->SpawnActor(ProjectileType, &SpawningLocation, &SpawningRotation);
+	UPrimitiveComponent* RootPrimitive = Cast<UPrimitiveComponent>(SpawnedActor->GetRootComponent());
+	
+	if (IsValid(RootPrimitive))
+	{
+		RootPrimitive->AddImpulse(RootComponent->GetForwardVector() * FireVelocity, NAME_None, true);
+	} 
 }
 
 void Aue_xyz_projectCharacter::DoMove(float Right, float Forward)

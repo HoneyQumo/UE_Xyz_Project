@@ -63,6 +63,14 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Firing")
+	TSubclassOf<AActor> ProjectileType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Firing")
+	FVector FiringOffset = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Firing")
+	float FireVelocity = 1000.f;
 	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -71,6 +79,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 	
 	void SitInCar();
+	
+	void Fire();
 
 public:
 
