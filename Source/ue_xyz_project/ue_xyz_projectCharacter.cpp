@@ -9,6 +9,8 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FirstLessonGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
 #include "ue_xyz_project.h"
 
@@ -74,6 +76,19 @@ void Aue_xyz_projectCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	{
 		UE_LOG(Logue_xyz_project, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void Aue_xyz_projectCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	UMaterialInstanceDynamic* NewMaterialInstance = GetMesh()->CreateDynamicMaterialInstance(0);
+	UFirstLessonGameInstance* GameInstance = Cast<UFirstLessonGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	
+	if (IsValid(NewMaterialInstance) && IsValid(GameInstance))
+	{
+		NewMaterialInstance->SetVectorParameterValue(FName("Paint Tint"), FLinearColor(GameInstance->GetPlayerColor()));
+	} 
 }
 
 void Aue_xyz_projectCharacter::Move(const FInputActionValue& Value)
